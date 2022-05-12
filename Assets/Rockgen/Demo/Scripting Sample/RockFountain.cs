@@ -8,6 +8,8 @@ public class RockFountain : MonoBehaviour
 
     RockGenerator generator;
 
+    public Material[] materials;
+
     void Start()
     {
         var settings = new RockGenerationSettings {
@@ -15,7 +17,7 @@ public class RockFountain : MonoBehaviour
                 Size       = 5,
                 Randomness = .75f
             },
-            StockDensity        = 8,
+            StockDensity        = 4,
             TargetTriangleCount = 220,
             Distortion          = .5f,
             PatternSize         = 1.35f,
@@ -25,6 +27,7 @@ public class RockFountain : MonoBehaviour
         };
 
         generator = new RockGenerator {Settings = settings};
+        materials = Resources.LoadAll<Material>("Materials");
     }
 
     Mesh CreateRandomRock()
@@ -52,15 +55,19 @@ public class RockFountain : MonoBehaviour
 
     void Update()
     {
-        if (!Input.GetMouseButton(0))
-            return;
+        // if (!Input.GetMouseButton(0))
+        //     return;
 
         var mesh = CreateRandomRock();
 
         var rock = Instantiate(prefab, transform.position, Quaternion.identity);
         rock.GetComponent<MeshFilter>().sharedMesh   = mesh;
         rock.GetComponent<MeshCollider>().sharedMesh = mesh;
-        Destroy(rock, 10);
+
+        Material stoneMat = materials[Random.Range(0,materials.Length)];
+        rock.GetComponent<MeshRenderer>().material = stoneMat;
+        
+        //Destroy(rock, 10);
     }
 }
 }
